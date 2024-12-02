@@ -10,40 +10,29 @@ let count = 0;
 function App() {
   const [backgroundColor, setBackgroundColor] = useState("blue");
   const [color, setColor] = useState("white");
-  const intervalId = useRef(null);
+  const [blurArr, setBlurArr] = useState(
+    chroma.scale(["#ADD8E6", "#0000FF"]).mode("lch").colors(20)
+  );
 
-  useEffect(() => {
-    initColor();
-    intervalId.current = setInterval(initColor, 500);
-
-    return () => {
-      if (intervalId.current) {
-        clearInterval(intervalId.current);
-      }
-    };
-  }, []);
-
-  const initColor = () => {
-    if (count >= 500) {
-      clearInterval(intervalId.current);
-      return;
-    }
-
-    const newBgColor = chroma.random();
-    const newColor = chroma.random();
-
-    setBackgroundColor(newBgColor);
-    setColor(newColor);
-
+  const start = async () => {
     const element = document.getElementById("img-wrapper");
-    toJpeg(element).then(function (dataUrl) {
+
+    for (const bg of blurArr) {
+      const newColor = chroma.random();
+      setColor(newColor);
+      setBackgroundColor(bg);
+
+      const dataUrl = await toJpeg(element);
       download(dataUrl, `第${count}张.png`);
       count++;
-    });
+    }
   };
 
   return (
     <div className={styles.wrapper}>
+      <div className={styles.start} onClick={start}>
+        开始
+      </div>
       <div
         className={styles.background}
         id="img-wrapper"
