@@ -11,8 +11,23 @@ function App() {
   const [backgroundColor, setBackgroundColor] = useState("blue");
   const [color, setColor] = useState("white");
   const [blurArr, setBlurArr] = useState(
-    chroma.scale(["#ADD8E6", "#0000FF"]).mode("lch").colors(20)
+    chroma.scale(["#0086ff", "#0000FF"]).mode("lch").colors(500)
   );
+
+  const generateRandomString = (length = 8) => {
+    // 定义可能包含的字符：大写字母、小写字母和数字
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    const charactersLength = characters.length;
+
+    // 循环生成指定长度的随机字符串
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    return result;
+  };
 
   const start = async () => {
     const element = document.getElementById("img-wrapper");
@@ -23,7 +38,7 @@ function App() {
       setBackgroundColor(bg);
 
       const dataUrl = await toJpeg(element);
-      download(dataUrl, `第${count}张.png`);
+      download(dataUrl, `${generateRandomString()}.png`);
       count++;
     }
   };
